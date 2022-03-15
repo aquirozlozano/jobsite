@@ -3,6 +3,7 @@ We are going to use docker-compose to deploy postgres db and airflow instance
 where we will execute our dag
 ## STEPS
 deploy ec2 instance Amazon Linux 2 AMI (HVM) - Kernel 4.14, SSD Volume Type
+deploy redshift db
 update SO 
 ```bash
 sudo yum update -y

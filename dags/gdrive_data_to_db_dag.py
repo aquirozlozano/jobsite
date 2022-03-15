@@ -30,7 +30,7 @@ dag = DAG(
 
 
 class gdrive_data_to_db_operator(BaseOperator):
-    #inicializo variables
+    #variables
     @apply_defaults
     def __init__(self, 
         df=pd.DataFrame().empty,
@@ -44,7 +44,7 @@ class gdrive_data_to_db_operator(BaseOperator):
 
 
     def read_data(self):
-        #descarga de csv
+        #reading the data from the url
         try:
             url='https://drive.google.com/file/d/14JcOSJAWqKOUNyadVZDPm7FplA7XYhrU/view'
             file_id=url.split('/')[-2]
@@ -57,7 +57,7 @@ class gdrive_data_to_db_operator(BaseOperator):
             raise
         
     def transform_data(self):
-        #transformacion del df
+        #transforming the data
         try:
             df = self.df
             col = ['origin_coord','destination_coord']
@@ -143,9 +143,9 @@ class gdrive_data_to_db_operator(BaseOperator):
     
     def write_data(self):
             
-        #se carga el df final y la conexion a la bd configurada en gcloud
+        #load the df to jdbc conection and create the table
         df = self.df
-        conn_string = 'postgresql://airflow:airflow@localhost:5432/airflow'
+        conn_string = 'postgresql://aquiroz:3LEEKWFAS@astronomer-dev.crgadsewf.us-east-1.redshift.amazonaws.com:5439/jobsite_raw'
         engine = create_engine(conn_string, echo=True)
         engine.connect()
 
@@ -162,7 +162,7 @@ class gdrive_data_to_db_operator(BaseOperator):
         )
         meta.create_all(engine)
 
-        #se insertan los datos en la tabla creada
+        #insert the data from the dataframe to the table
         df.to_sql(name ='trips_data', con=engine, index=False, chunksize=500,if_exists='replace')
     
 
